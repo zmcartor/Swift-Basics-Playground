@@ -304,7 +304,14 @@ enum Node {
 
 
 /* :
-Protocols are just like Objc protocols, except they can include generic types and even provide their own implementation for methods. Protocls which have their own associated types can only be used as generic constraits. 
+Protocols are just like Objc protocols, except they can include generic types and even provide their own implementation for methods. Protocls which have their own associated types can only be used as generic constraits. Regular ol protocols can be used as Types. When requiring a func param to conform to mult protcols, use syntax protocol<Sortable, Equatable, WhateverAble>
+
+“If a type already conforms to all of the requirements of a protocol, but has not yet stated that it adopts that protocol, you can make it adopt the protocol with an empty extension”
+
+Excerpt From: Apple Inc. “The Swift Programming Language (Swift 2 Prerelease).” iBooks. https://itun.es/us/k5SW7.l
+
+
+
 */
 
 
