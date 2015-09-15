@@ -210,13 +210,106 @@ enum TeaType {
 let tea:TeaType = .fruit("honey", "lemon")
 tea.whatKindOfTea()
 
+/* : Closures are like func definition, except everything is moved __inside__ the curly brackets. { (String, String) -> Int in ... }
+    When passing a closure to a function or property argument, all the types can be inferred. Param and return.
+*/
+
+func someFuncWithClosure(closure:(Int, Int) -> String) -> String{
+    return closure(15,16)
+}
+
+// dont have to declare types. trailing closure, explicit return
+let closureReturn = someFuncWithClosure(){one, two in "one:\(one) and two:\(two)"}
+
+/* : 
+
+# Avoiding retain cycles
+Within closures, use the old [unowned self] in the param list. Using unowned means this variable can never be nil. Using [weak self] makes it into an optional, self? and allows the closure to handle if self disappeared. 
+
+    Long running network or async requests want to capture self so it doesn't disappear, so use 'self' normally without weak or unowned. 
+
+    Class getters/setters should used [self unowned] because self owns the getter, and then the getter owns self. Retain cycle!
+
+http://stackoverflow.com/questions/24320347/shall-we-always-use-unowned-self-inside-closure-in-swift
+*/
+
+
+
 /* :
 # Classes
 Passed by reference, just like normal ObjC classes. There are no ivars which shadow property names. 
 
 ## Initialization : Before using the class. ALL properties must be initialized or have default values when declared. **Note** During init we cannot called any instance methods with `self` to set a default variable; self doesn't yet exist!
-
 */
+
+class Drink {
+
+    let size:String
+    let type:String
+    var sips = 0
+    
+    // lazy variables can have their initialization deferred until first use.
+    // They can use 'self' methods. Can also be init with a closure
+    lazy var databaseHandleSocket:Int? = self.grabDatabaseHandle()
+    
+    lazy var lazyClosure:String = { return "Zzzz so lazy"}()
+    
+    // initialize all the variables in this custom initalizer
+    
+    init(size:String , type:String){
+        self.type = type
+        self.size = size
+    }
+ // don't have to explicitly return 'self' in an initializer
+    
+    // Computed property example
+    var calories: Float {
+        get {
+            return 100 * Float(sips)
+        }
+        
+        // this is a read-only property. No 'set' closure. We can also add observers with willSet, didSet to run code before/after
+    }
+    
+    func grabDatabaseHandle() -> Int? {
+            return nil
+    }
+    
+    deinit {
+        // unhook KVO, notifications, other things.
+    }
+    
+}
+
+let latte = Drink(size: "large", type: "latte")
+
+// Structures follow the same initialization rules as classes. However besides a typical 'init' function, every structure also gets a complete memberwise initializer for free!
+
+struct Donut {
+    var spinkles:Bool
+    var frosting:String?
+    var filling:String?
+}
+
+let chocolateDonut = Donut(spinkles: false, frosting: "chocolate", filling: nil)
+
+// Enum cases marked 'indirect' mean that the case or associated types are themselves enums. This allows creation of recursive enumeration structures
+
+// it's possible to implement a recursive parser with enums. Each token could stand for an expected value (an enum)
+
+enum Node {
+    indirect case right(Node)
+    indirect case left(Node)
+}
+
+
+/* :
+Protocols are just like Objc protocols, except they can include generic types and even provide their own implementation for methods. Protocls which have their own associated types can only be used as generic constraits. 
+*/
+
+
+
+
 
 
 
